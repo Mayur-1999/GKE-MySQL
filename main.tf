@@ -71,7 +71,7 @@ module "subnet" {
 service account
 *****************************************/
 
-resource "google_service_account" "quickstart" {
+resource "google_service_account" "service_acc" {
   account_id   = "gke-service-account"
   display_name = "GKE Service Account"
 }
@@ -82,6 +82,9 @@ resource "google_project_iam_binding" "cloudsql_client" {
   members = [
   "serviceAccount:gke-service-account@${var.project_id}.iam.gserviceaccount.com",
   ]
+  depends_on= [
+   google_service_account.service_acc
+  ]
 }
 
 resource "google_project_iam_binding" "logging_logWriter" {
@@ -89,5 +92,8 @@ resource "google_project_iam_binding" "logging_logWriter" {
   role    = "roles/logging.logWriter"
   members = [
   "serviceAccount:gke-service-account@${var.project_id}.iam.gserviceaccount.com",
+  ]
+  depends_on= [
+   google_service_account.service_acc
   ]
 }
