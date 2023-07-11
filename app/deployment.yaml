@@ -87,7 +87,7 @@ spec:
           # tcp should be set to the port the proxy should listen on
           # and should match the DB_PORT value set above.
           # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
-          - "-instances=qwiklabs-gcp-02-07557755fdc3:us-central1:terraform-20230710123657882800000001=tcp:3306"
+          - "-instances=qwiklabs-gcp-00-a8ea923ad336:us-central1:test-instance=tcp:3306"
         securityContext:
           # The default Cloud SQL proxy image runs as the
           # "nonroot" user and group (uid: 65532) by default.
