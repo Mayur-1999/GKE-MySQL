@@ -8,7 +8,7 @@ module "MySql" {
   instance_name                = "test-instance"
   region                       = var.region
   tier                         = "db-f1-micro"
-  network                      = module.vpc-001.vpc.self_link
+  network                      = module.vpc.vpc.self_link
   private_ip_address_name      = "private-ip"
   database_name                = "test-database"
   dbuser_name                  = "db-user"
@@ -30,7 +30,7 @@ module "test-cluster" {
   node_count         = 3
   initial_node_count = 1
   #service_account    = var.service_account
-  network            =  module.vpc-001.vpc.self_link
+  network            =  module.vpc.vpc.self_link
   subnetwork         = "projects/${var.project_id}/regions/${var.region}/subnetworks/subnet"
 
   depends_on = [ 
@@ -52,7 +52,7 @@ module "vpc" {
 module "subnet" {
   source       = "./modules/subnet"
   project_id   = var.project_id
-  network_name = module.vpc-001.vpc.self_link
+  network_name = module.vpc.vpc.self_link
   role         = "ACTIVE"
   subnets = [{
     subnet_name           = "subnet"
