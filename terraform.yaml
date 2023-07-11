@@ -1,0 +1,122 @@
+name: 'Two Tier: GKE + MySQL'
+on:
+ workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+env:
+  PROJECT_ID: qwiklabs-gcp-04-5dc03957119b
+  INSTANCE_NAME: test-instance
+  SERVICE_ACC_NAME: ksa-cloud-sql
+  DATABASE_NAME: test-database
+  GKE_CLUSTER: test-cluster
+  REGION: us-central1
+  DATABASE_USER_NAME: db-user
+  DATABASE_PASSWORD: db-password
+
+jobs:     
+  Terraform_INFRA:
+    name: 'Terraform_INFRA'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: /home/runner/work/workflow-Test/workflow-Test
+    steps:
+            
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Fmt
+        run: terraform fmt
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan 
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+
+  Deploy_app:
+    name: 'Deploy_app'
+    needs: Terraform_INFRA
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: /home/runner/work/Two-Tier-CloudRun-Firestore/Two-Tier-CloudRun-Firestore
+
+    steps:
+            
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: gcloud 
+        uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.SA_KEY }}
+
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: docker build and push into artifact registry
+        run: |
+            #git clone https://github.com/GoogleCloudPlatform/golang-samples.git
+            cd GKE-MySQL/app
+            gcloud artifacts repositories create gke-cloud-sql-repo \
+              --project=${{PROJECT_ID}} \
+              --repository-format=docker \
+              --location=us-central1 \
+              --description="GKE Quickstart sample app"
+            gcloud builds submit \
+              --tag us-central1-docker.pkg.dev/${{PROJECT_ID}}/gke-cloud-sql-repo/gke-sql .
+
+      - run: |-
+            gcloud --quiet auth configure-docker
+
+      - name: connect to kubernetes
+      - run: |
+          gcloud components install gke-gcloud-auth-plugin
+          gke-gcloud-auth-plugin --version
+          gcloud config set project "${{env.PROJECT_ID}}"
+          gcloud container clusters get-credentials "${{env.GKE_CLUSTER}}" --region="${{env.REGION}}"
+      
+      #- name: env config 
+        #run: |
+          #sed -i 's/dockerv1/${{env.SPANNER_PROJECT}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml
+          #sed -i 's/frv1/frontend:${{github.run_number}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml
+
+          #sed -i 's/${SPANNER_PROJECT}/${{env.SPANNER_PROJECT}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml
+          #sed -i 's/${SPANNER_INSTANCE}/${{env.SPANNER_INSTANCE}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml
+          #sed -i 's/${SPANNER_DATABASE}/${{env.SPANNER_DATABASE}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml
+          #sed -i 's/${SPANNER_DB_USER_GSA_ID}/${{env.SPANNER_DB_USER_GSA_ID}}/g' ${{ github.workspace }}/release/kubernetes-manifests.yaml    
+
+      - name: Deploy  deployment
+      - run: |
+          kubectl apply -f service-account.yaml
+          gcloud iam service-accounts add-iam-policy-binding \
+            --role="roles/iam.workloadIdentityUser" \
+            --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
+            gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+          kubectl annotate serviceaccount \
+            ksa-cloud-sql \
+            iam.gke.io/gcp-service-account=gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+          kubectl create secret generic gke-cloud-sql-secrets \
+            --from-literal=database=${{DATABASE_NAME}} \
+            --from-literal=username=${{DATABASE_USER_NAME}} \
+            --from-literal=password=${{DATABASE_PASSWORD}}
+          kubectl apply -f deployment.yaml
+
+
