@@ -5,7 +5,7 @@
 module "MySql" {
   source                       = "./modules/MySQL"
   project_id                   = var.project_id
-  instance_name                = "test-instance"
+  instance_name                = "test-instance-001"
   region                       = var.region
   tier                         = "db-f1-micro"
   network                      = module.vpc.vpc.self_link
@@ -24,7 +24,7 @@ module "MySql" {
 
 module "test-cluster" {
   source             = "./modules/GKE"
-  cluster_name       = "test-cluster"
+  cluster_name       = "test-cluster-001"
   project_id         = var.project_id
   location           = var.region
   node_count         = 3
@@ -45,7 +45,7 @@ VPC Subnets
 module "vpc" {
   source                  = "./modules/vpc"
   project_id              = var.project_id
-  network_name            = "vpc"
+  network_name            = "vpc-001"
   auto_create_subnetworks = false
 }
 
@@ -55,7 +55,7 @@ module "subnet" {
   network_name = module.vpc.vpc.self_link
   role         = "ACTIVE"
   subnets = [{
-    subnet_name           = "subnet"
+    subnet_name           = "subnet-001"
     subnet_region         = "us-central1"
     subnet_ip             = "10.10.0.0/24"
     subnet_flow_logs      = "false"
