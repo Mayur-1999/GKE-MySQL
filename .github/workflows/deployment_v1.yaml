@@ -68,18 +68,13 @@ jobs:
         with:
           service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
           project_id: ${{ env.PROJECT_ID }}  
-      - name: docker build and push into artifact registry
+      - name: docker build and push 
         run: |
           gcloud --quiet auth configure-docker
-          gcloud auth login
           cd app
-          gcloud artifacts repositories create gke-cloud-sql-repo \
-            --project=${{env.PROJECT_ID}} \
-            --repository-format=docker \
-            --location=us-central1 \
-            --description="GKE Quickstart sample app"
-          gcloud builds submit \
-            --tag us-central1-docker.pkg.dev/${{env.PROJECT_ID}}/gke-cloud-sql-repo/gke-sql .
+          docker build -t app .
+          docker tag app gcr.io/${{env.PROJECT_ID}}/app
+          docker push gcr.io/${{env.PROJECT_ID}}/app
       
       - run: |-
             gcloud --quiet auth configure-docker   
