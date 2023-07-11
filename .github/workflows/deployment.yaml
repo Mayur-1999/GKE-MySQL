@@ -87,25 +87,25 @@ jobs:
 
       - name: connect to kubernetes
       - run: |
-          gcloud components install gke-gcloud-auth-plugin
-          gke-gcloud-auth-plugin --version
-          gcloud config set project "${{env.PROJECT_ID}}"
-          gcloud container clusters get-credentials "${{env.GKE_CLUSTER}}" --region="${{env.REGION}}"
+            gcloud components install gke-gcloud-auth-plugin
+            gke-gcloud-auth-plugin --version
+            gcloud config set project "${{env.PROJECT_ID}}"
+            gcloud container clusters get-credentials "${{env.GKE_CLUSTER}}" --region="${{env.REGION}}"
       
       - name: Deploy  deployment
       - run: |
-          kubectl apply -f service-account.yaml
-          gcloud iam service-accounts add-iam-policy-binding \
-            --role="roles/iam.workloadIdentityUser" \
-            --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
-            gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
-          kubectl annotate serviceaccount \
-            ksa-cloud-sql \
-            iam.gke.io/gcp-service-account=gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
-          kubectl create secret generic gke-cloud-sql-secrets \
-            --from-literal=database=${{DATABASE_NAME}} \
-            --from-literal=username=${{DATABASE_USER_NAME}} \
-            --from-literal=password=${{DATABASE_PASSWORD}}
-          kubectl apply -f deployment.yaml
+            kubectl apply -f service-account.yaml
+            gcloud iam service-accounts add-iam-policy-binding \
+              --role="roles/iam.workloadIdentityUser" \
+              --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
+              gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+            kubectl annotate serviceaccount \
+              ksa-cloud-sql \
+              iam.gke.io/gcp-service-account=gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+            kubectl create secret generic gke-cloud-sql-secrets \
+              --from-literal=database=${{DATABASE_NAME}} \
+              --from-literal=username=${{DATABASE_USER_NAME}} \
+              --from-literal=password=${{DATABASE_PASSWORD}}
+            kubectl apply -f deployment.yaml
 
 
