@@ -68,14 +68,9 @@ jobs:
         with:
           service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
           project_id: ${{ env.PROJECT_ID }}  
-
-      - run: |-
-          gcloud --quiet auth configure-docker
-
       - name: docker build and push into artifact registry
-        run: |
-          gcloud components install gke-gcloud-auth-plugin
-          gke-gcloud-auth-plugin --version
+      - run: |
+          gcloud --quiet auth configure-docker
           gcloud auth login
           cd app
           gcloud artifacts repositories create gke-cloud-sql-repo \
