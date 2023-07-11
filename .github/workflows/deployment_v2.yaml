@@ -86,7 +86,13 @@ jobs:
           gcloud config set project "${{env.PROJECT_ID}}"
           gcloud container clusters get-credentials "${{env.GKE_CLUSTER}}" --region="${{env.REGION}}"
 
-      - name: Deployment
+      - name: env config 
+        run: |
+          sed -i 's/${PROJECT_ID}/${{env.PROJECT_ID}}/g' ${{ github.workspace }}/app/deployment.yaml
+          sed -i 's/${REGION}/${{env.REGION}}/g' ${{ github.workspace }}/app/deployment.yaml
+          sed -i 's/${INSTANCE_NAME}/${{env.INSTANCE_NAME}}/g' ${{ github.workspace }}/app/deployment.yaml
+
+      - name: Deploy service-account file
         run: |
           kubectl apply -f service-account.yaml
           gcloud iam service-accounts add-iam-policy-binding \
@@ -96,6 +102,9 @@ jobs:
           kubectl annotate serviceaccount \
             ksa-cloud-sql \
             iam.gke.io/gcp-service-account=gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+
+      - name: pass kubernetes secrets & deploy deployment file
+        run: |
           kubectl create secret generic gke-cloud-sql-secrets \
             --from-literal=database=${{env.DATABASE_NAME}} \
             --from-literal=username=${{env.DATABASE_USER_NAME}} \
