@@ -72,6 +72,7 @@ service account
 *****************************************/
 
 resource "google_service_account" "service_acc" {
+  project      = var.project_id
   account_id   = "gke-service-account"
   display_name = "GKE Service Account"
 }
