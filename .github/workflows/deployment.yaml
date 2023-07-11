@@ -101,7 +101,7 @@ jobs:
               gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
             kubectl annotate serviceaccount \
               ksa-cloud-sql \
-              iam.gke.io/gcp-service-account=gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+              iam.gke.io/gcp-service-account=gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
             kubectl create secret generic gke-cloud-sql-secrets \
               --from-literal=database=${{DATABASE_NAME}} \
               --from-literal=username=${{DATABASE_USER_NAME}} \
