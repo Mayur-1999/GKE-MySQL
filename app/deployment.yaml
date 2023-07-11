@@ -31,8 +31,8 @@ spec:
       - name: gke-cloud-sql-app
         # Replace <LOCATION> with your Artifact Registry location (e.g., us-central1).
         # Replace <YOUR_PROJECT_ID> with your project ID.
-        image: us-central1-docker.pkg.dev/qwiklabs-gcp-04-ddc10c588dda/gke-cloud-sql-repo/gke-sql:latest
-        #image: gcr.io/PROJECT_ID/app
+        #image: us-central1-docker.pkg.dev/qwiklabs-gcp-04-ddc10c588dda/gke-cloud-sql-repo/gke-sql:latest
+        image: gcr.io/qwiklabs-gcp-04-ddc10c588dda/app
         # This app listens on port 8080 for web traffic by default.
         ports:
         - containerPort: 8080
