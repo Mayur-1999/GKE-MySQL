@@ -74,6 +74,7 @@ jobs:
 
       - name: docker build and push into artifact registry
         run: |
+          gcloud auth login
           cd app
           gcloud artifacts repositories create gke-cloud-sql-repo \
             --project=${{env.PROJECT_ID}} \
