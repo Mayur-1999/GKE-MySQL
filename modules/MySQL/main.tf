@@ -52,12 +52,14 @@ resource "google_sql_database_instance" "sql_instance" {
 }
 
 resource "google_sql_database" "sql_database" {
+  project             = var.project_id
   name       = var.database_name
   instance   = google_sql_database_instance.sql_instance.name
   depends_on = [google_sql_database_instance.sql_instance]
 }
 
 resource "google_sql_user" "sql_user" {
+  project             = var.project_id
   name       = var.dbuser_name
   instance   = google_sql_database_instance.sql_instance.name
   password   = var.dbuser_password
