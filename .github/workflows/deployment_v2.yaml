@@ -72,9 +72,9 @@ jobs:
         run: |
           gcloud --quiet auth configure-docker
           cd app
-          sudo docker build -t app .
-          sudo docker tag app gcr.io/${{env.PROJECT_ID}}/app
-          sudo docker push gcr.io/${{env.PROJECT_ID}}/app
+          #sudo docker build -t app .
+          #sudo docker tag app gcr.io/${{env.PROJECT_ID}}/app
+          #sudo docker push gcr.io/${{env.PROJECT_ID}}/app
       
       - run: |-
             gcloud --quiet auth configure-docker   
