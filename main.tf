@@ -72,7 +72,6 @@ service account
 *****************************************/
 
 resource "google_service_account" "quickstart" {
-  #name = "gke-quickstart-service-account-001"
   account_id   = "gke-service-account"
   display_name = "GKE Service Account"
 }
