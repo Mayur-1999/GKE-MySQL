@@ -15,7 +15,7 @@ env:
   DATABASE_PASSWORD: db-password
 
 jobs:     
-  Terraform_INFRA:
+  terraform1:
     name: 'Terraform_INFRA'
     runs-on: ubuntu-latest
     defaults:
@@ -49,9 +49,9 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }} 
 
-  Deploy_app:
+  terraform2:
     name: 'Deploy_app'
-    needs: Terraform_INFRA
+    needs: terraform1
     runs-on: ubuntu-latest
     defaults:
       run:
