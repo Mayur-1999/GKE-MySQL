@@ -74,6 +74,8 @@ jobs:
 
       - name: docker build and push into artifact registry
         run: |
+          gcloud components install gke-gcloud-auth-plugin
+          gke-gcloud-auth-plugin --version
           gcloud auth login
           cd app
           gcloud artifacts repositories create gke-cloud-sql-repo \
