@@ -5,7 +5,7 @@ permissions:
   contents: read
   id-token: write
 env:
-  PROJECT_ID: qwiklabs-gcp-04-5dc03957119b
+  PROJECT_ID: qwiklabs-gcp-03-268f66aeb131
   INSTANCE_NAME: test-instance
   SERVICE_ACC_NAME: ksa-cloud-sql
   DATABASE_NAME: test-database
@@ -21,7 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: /home/runner/work/workflow-Test/workflow-Test
+        working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
     steps:
             
       - name: Checkout
@@ -56,7 +56,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: /home/runner/work/Two-Tier-CloudRun-Firestore/Two-Tier-CloudRun-Firestore
+        working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
 
     steps:
             
@@ -98,7 +98,7 @@ jobs:
           gcloud iam service-accounts add-iam-policy-binding \
             --role="roles/iam.workloadIdentityUser" \
             --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
-            gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+            gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
           kubectl annotate serviceaccount \
             ksa-cloud-sql \
             iam.gke.io/gcp-service-account=gke-quickstart-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
