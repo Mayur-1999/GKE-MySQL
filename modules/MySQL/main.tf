@@ -1,4 +1,5 @@
 resource "google_project_service" "service_networking" {
+  project            = var.project_id
   service            = "servicenetworking.googleapis.com"
   disable_on_destroy = true
 }
@@ -6,6 +7,7 @@ resource "google_project_service" "service_networking" {
 resource "google_compute_global_address" "private_ip_address" {
   provider      = google-beta
   name          = "private-ip-address"
+  project       = var.project_id
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
@@ -18,7 +20,7 @@ resource "google_compute_global_address" "private_ip_address" {
 
 resource "google_service_networking_connection" "private_vpc_connection" {
   provider                = google-beta
-  #project                 = var.project_id
+  project                 = var.project_id
   network                 = var.network
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
@@ -29,7 +31,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 resource "google_sql_database_instance" "sql_instance" {
   name                = var.instance_name
-  #project             = var.project_id
+  project             = var.project_id
   region              = var.region
   database_version    = var.database_version
   deletion_protection = var.deletion_protection
