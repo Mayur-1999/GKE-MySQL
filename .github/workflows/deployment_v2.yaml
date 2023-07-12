@@ -15,43 +15,43 @@ env:
   DATABASE_PASSWORD: db-password
 
 jobs:     
-  terraform1:
-    name: 'Terraform_INFRA'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
-    steps:
+#  terraform1:
+ #   name: 'Terraform_INFRA'
+  #  runs-on: ubuntu-latest
+   # defaults:
+    #  run:
+     #   shell: bash
+      #  working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
+    #steps:
             
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Terraform Init
-        run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Fmt
-        run: terraform fmt
-
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan 
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }} 
+#      - name: Checkout
+ #       uses: actions/checkout@v2
+#
+ #     - name: Terraform Init
+  #      run: terraform init
+   #     env:
+    #      GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+#
+ #     - name: Terraform Validate
+  #      run: terraform validate
+#
+ #     - name: Terraform Fmt
+  #      run: terraform fmt
+#
+ #     - name: Terraform Plan
+  #      id: plan
+   #     run: terraform plan 
+    #    env:
+     #     GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+#
+ #     - name: Terraform Apply
+  #      run: terraform apply -auto-approve
+   #     env:
+    #      GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }} 
 
   terraform2:
     name: 'Deploy_app'
-    needs: terraform1
+    #needs: terraform1
     runs-on: ubuntu-latest
     defaults:
       run:
