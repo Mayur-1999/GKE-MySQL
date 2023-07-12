@@ -94,7 +94,8 @@ jobs:
 
       - name: Deploy service-account file
         run: |
-          cd ../
+          pwd
+          ls -a
           kubectl apply -f service-account.yaml
           gcloud iam service-accounts add-iam-policy-binding \
             --role="roles/iam.workloadIdentityUser" \
@@ -112,6 +113,6 @@ jobs:
             --from-literal=password=${{env.DATABASE_PASSWORD}}
           kubectl apply -f deployment.yaml
           
-      #- name: deploy internal load balancer
-       # run: |
-        #  kubectl apply -f internal-lb.yaml
+      - name: deploy internal load balancer
+        run: |
+          kubectl apply -f internal-lb.yaml
