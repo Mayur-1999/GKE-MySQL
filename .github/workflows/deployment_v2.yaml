@@ -92,30 +92,32 @@ jobs:
           sed -i 's/${REGION}/${{env.REGION}}/g' ${{ github.workspace }}/app/deployment.yaml
           sed -i 's/${INSTANCE_NAME}/${{env.INSTANCE_NAME}}/g' ${{ github.workspace }}/app/deployment.yaml
 
-      - name: Deploy service-account file
-        run: |
-          pwd
-          ls -a
-          cd app
-          pwd
-          ls -a 
-          kubectl apply -f service-account.yaml
-          gcloud iam service-accounts add-iam-policy-binding \
-            --role="roles/iam.workloadIdentityUser" \
-            --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
-            gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
-          kubectl annotate serviceaccount \
-            ksa-cloud-sql \
-            iam.gke.io/gcp-service-account=gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+#      - name: Deploy service-account file
+ #       run: |
+  #        pwd
+   #       ls -a
+    #      cd app
+     #     pwd
+      #    ls -a 
+       #   kubectl apply -f service-account.yaml
+        #  gcloud iam service-accounts add-iam-policy-binding \
+         #   --role="roles/iam.workloadIdentityUser" \
+          #  --member="serviceAccount:${{env.PROJECT_ID}}.svc.id.goog[default/ksa-cloud-sql]" \
+           # gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
+#          kubectl annotate serviceaccount \
+ #           ksa-cloud-sql \
+  #          iam.gke.io/gcp-service-account=gke-service-account@${{env.PROJECT_ID}}.iam.gserviceaccount.com
 
       - name: pass kubernetes secrets & deploy deployment file
         run: |
-          kubectl create secret generic gke-cloud-sql-secrets \
-            --from-literal=database=${{env.DATABASE_NAME}} \
-            --from-literal=username=${{env.DATABASE_USER_NAME}} \
-            --from-literal=password=${{env.DATABASE_PASSWORD}}
+          cd app
+#          kubectl create secret generic gke-cloud-sql-secrets \
+ #           --from-literal=database=${{env.DATABASE_NAME}} \
+  #          --from-literal=username=${{env.DATABASE_USER_NAME}} \
+   #         --from-literal=password=${{env.DATABASE_PASSWORD}}
           kubectl apply -f deployment.yaml
           
       - name: deploy internal load balancer
         run: |
+          cd app
           kubectl apply -f internal-lb.yaml
