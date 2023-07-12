@@ -3,18 +3,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hostname
+  name: gke-cloud-sql-app
   namespace: default
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
 spec:
   ports:
-  - name: host1
-    port: 80
+  - port: 80
     protocol: TCP
     targetPort: 8080
   selector:
-    app: hostname
+    app: gke-cloud-sql-app
   type: ClusterIP
 
 ---
@@ -23,12 +22,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ilb-demo-ingress
-  namespace: default
   annotations:
     kubernetes.io/ingress.class: "gce-internal"
 spec:
   defaultBackend:
     service:
-      name: hostname
+      name: gke-cloud-sql-app
       port:
         number: 80
