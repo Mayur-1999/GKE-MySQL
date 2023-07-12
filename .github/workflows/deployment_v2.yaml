@@ -51,7 +51,7 @@ jobs:
 
   terraform2:
     name: 'Deploy_app'
-    #needs: terraform1
+    needs: terraform1
     runs-on: ubuntu-latest
     defaults:
       run:
