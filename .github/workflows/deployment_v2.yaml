@@ -5,7 +5,7 @@ permissions:
   contents: read
   id-token: write
 env:
-  PROJECT_ID: qwiklabs-gcp-04-8ead64ed7674
+  PROJECT_ID: qwiklabs-gcp-04-3894fd6ed284
   INSTANCE_NAME: test-instance
   SERVICE_ACC_NAME: ksa-cloud-sql
   DATABASE_NAME: test-database
