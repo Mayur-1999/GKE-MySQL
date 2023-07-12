@@ -94,8 +94,8 @@ jobs:
 
       - name: Deploy service-account file
         run: |
-          cd 
-          cd app
+          cd
+          cd GKE-MySQL/app
           kubectl apply -f service-account.yaml
           gcloud iam service-accounts add-iam-policy-binding \
             --role="roles/iam.workloadIdentityUser" \
