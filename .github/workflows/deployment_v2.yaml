@@ -15,43 +15,43 @@ env:
   DATABASE_PASSWORD: db-password
 
 jobs:     
-  terraform1:
-    name: 'Terraform_INFRA'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
-    steps:
+#  terraform1:
+ #   name: 'Terraform_INFRA'
+  #  runs-on: ubuntu-latest
+   # defaults:
+    #  run:
+     #   shell: bash
+      #  working-directory: /home/runner/work/GKE-MySQL/GKE-MySQL
+    #steps:
             
-      - name: Checkout
-        uses: actions/checkout@v2
+#      - name: Checkout
+ #       uses: actions/checkout@v2
+#
+ #     - name: Terraform Init
+  #      run: terraform init
+   #     env:
+    #      GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+#
+ #     - name: Terraform Validate
+  #      run: terraform validate
 
-      - name: Terraform Init
-        run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
+#      - name: Terraform Fmt
+ #       run: terraform fmt
+#
+ #     - name: Terraform Plan
+  #      id: plan
+   #     run: terraform plan 
+    #    env:
+     #     GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
 
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Fmt
-        run: terraform fmt
-
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan 
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }}
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }} 
+ #     - name: Terraform Apply
+  #      run: terraform apply -auto-approve
+   #     env:
+    #      GOOGLE_CREDENTIALS: ${{ secrets.SA_KEY }} 
 
   terraform2:
     name: 'Deploy_app'
-    needs: terraform1
+    #needs: terraform1
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -68,16 +68,16 @@ jobs:
         with:
           service_account_key: ${{ secrets.SA_KEY }}
           project_id: ${{ env.PROJECT_ID }}  
-      - name: docker build and push 
-        run: |
-          gcloud --quiet auth configure-docker
-          cd app
-          docker build -t app .
-          docker tag app gcr.io/${{env.PROJECT_ID}}/app
-          docker push gcr.io/${{env.PROJECT_ID}}/app
+#      - name: docker build and push 
+ #       run: |
+  #        gcloud --quiet auth configure-docker
+   #       cd app
+    #      docker build -t app .
+     #     docker tag app gcr.io/${{env.PROJECT_ID}}/app
+      #    docker push gcr.io/${{env.PROJECT_ID}}/app
       
-      - run: |-
-            gcloud --quiet auth configure-docker   
+   #   - run: |-
+    #        gcloud --quiet auth configure-docker   
 
       - name: connect to kubernetes
         run: |
@@ -96,6 +96,9 @@ jobs:
         run: |
           pwd
           ls -a
+          cd app
+          pwd
+          ls -a 
           kubectl apply -f service-account.yaml
           gcloud iam service-accounts add-iam-policy-binding \
             --role="roles/iam.workloadIdentityUser" \
