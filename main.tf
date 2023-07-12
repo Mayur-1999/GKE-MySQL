@@ -86,6 +86,30 @@ module "proxy-subnet" {
   ]
 }
 
+/******************************************
+	Firewall
+******************************************/
+
+module "app-fw" {
+  source               = "./modules/firewall"
+  firewall_description = "allow-proxy-connection"
+  firewall_name        = "allow-tcp" #"allow-http"
+  network              = module.vpc.vpc.self_link
+  project_id           = var.project_id
+  target_tags          = []
+  rules_allow = [
+    {
+      protocol = "tcp"
+      ports    = [80,8080]
+    }
+  ]
+  source_ranges = ["10.9.0.0/23"]
+
+  depends_on = [
+    module.vpc
+  ]
+}
+
 /*****************************************
 service account
 *****************************************/
