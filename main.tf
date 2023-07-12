@@ -45,7 +45,7 @@ VPC Subnets
 module "vpc" {
   source                  = "./modules/vpc"
   project_id              = var.project_id
-  network_name            = "vpc-001"
+  network_name            = "vpc"
   auto_create_subnetworks = false
 }
 
@@ -62,6 +62,25 @@ module "subnet" {
     subnet_private_access = "false"
     }]
 
+  depends_on = [
+    module.vpc
+  ]
+}
+
+module "proxy-subnet" {
+  source       = "./modules/subnet"
+  project_id   = var.project_id
+  network_name = module.vpc.vpc.self_link
+  purpose      = "REGIONAL_MANAGED_PROXY"
+  role         = "ACTIVE"
+  subnets = [{
+    subnet_name           = "proxy-only-subnet"
+    subnet_region         = "us-central1"
+    subnet_ip             = "10.9.0.0/23" #"10.129.0.0/23"
+    subnet_flow_logs      = "false"
+    subnet_private_access = "false"
+    }
+  ]
   depends_on = [
     module.vpc
   ]
